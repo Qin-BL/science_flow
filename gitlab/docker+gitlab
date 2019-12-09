@@ -1,0 +1,124 @@
+原文：https://cloud.tencent.com/developer/article/1492492
+
+
+一、GitLab简介
+项目的开发通常都离不开对代码的版本管理。简单的方式可以在内网搭建一个仓库，然后添加各个组员的公钥来共同开发。这种方式不仅不利于管理和维护，而且功能过于单一。我们很希望有像GitHub这样的平台服务，功能齐全且好维护。但由于GFW的原因，有时候访问延迟过大。更重要的是，github免费版只支持开源项目，私有项目需要付费，而且比较昂贵，并不适合公司的项目。
+
+GitLab 是一个类似与GitHub的项目，功能十分强大且界面美观，支持代码管理、issue管理、代码review和CI等功能。它提供免费的社区版和付费版，社区版足够满足我们的项目需求。本篇文章我将介绍GitLab社区版的安装和配置。
+
+二 、安装Docker Client
+推荐安装1.10.0以上版本的Docker客户端，参考文档 docker-ce
+
+1. 使用官方安装脚本自动安装
+
+[root@iZwz9eftauv7x69f5jvi96Z ~]# curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+...
+[root@iZwz9eftauv7x69f5jvi96Z ~]# docker version
+Client:
+ Version:           18.06.1-ce
+ API version:       1.38
+ Go version:        go1.10.3
+ Git commit:        e68fc7a
+ Built:             Tue Aug 21 17:23:03 2018
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server:
+ Engine:
+  Version:          18.06.1-ce
+  API version:      1.38 (minimum version 1.12)
+  Go version:       go1.10.3
+  Git commit:       e68fc7a
+  Built:            Tue Aug 21 17:25:29 2018
+  OS/Arch:          linux/amd64
+  Experimental:     false
+2. 配置国内镜像加速
+
+针对Docker客户端版本大于 1.10.0 的用户
+
+您可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速
+
+        获取加速地址 -> 阿里云容器镜像服务
+
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://kv08q9ph.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+三、安装Portainer
+Docker可视化界面的安装：Portainer
+
+$ docker volume create portainer_data
+$ docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+四、Install Compose on Linux systems
+1. Run this command to download the latest version of Docker Compose:
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+2.Apply executable permissions to the binary:
+
+sudo chmod +x /usr/local/bin/docker-compose
+3. Optionally, install command completion for the bash and zsh shell.
+
+4. Test the installation.
+
+$ docker-compose --version
+docker-compose version 1.23.1, build 1719ceb
+五、安装GitLab
+1. 配置docker-compose
+
+version: '3'
+services:
+    gitlab:
+      image: 'twang2218/gitlab-ce-zh:9.4'
+      restart: unless-stopped
+      hostname: 'dev.gitlab.com'
+      environment:
+        TZ: 'Asia/Shanghai'
+        GITLAB_OMNIBUS_CONFIG: |
+          external_url 'http://dev.gitlab.com:9999'
+          gitlab_rails['time_zone'] = 'Asia/Shanghai'
+          # 需要配置到 gitlab.rb 中的配置可以在这里配置，每个配置一行，注意缩进。
+          # 比如下面的电子邮件的配置：
+           gitlab_rails['smtp_enable'] = true
+           gitlab_rails['smtp_address'] = "smtp.qq.com"
+           gitlab_rails['smtp_port'] = 465
+           gitlab_rails['smtp_user_name'] = "9579249@qq.com"
+           gitlab_rails['smtp_password'] = "成功开启POP3/SMTP服务后对应的授权码，写入此处"
+           gitlab_rails['smtp_authentication'] = "login"
+           gitlab_rails['smtp_enable_starttls_auto'] = true
+           gitlab_rails['smtp_tls'] = true
+           gitlab_rails['gitlab_email_from'] = '9579249@qq.com'
+      ports:
+        - '9999:9999'
+          #- '443:443'
+          #- '22:22'
+      volumes:
+        - /home/gitlab/config:/etc/gitlab
+        - /home/gitlab/data:/var/opt/gitlab
+        - /home/gitlab/logs:/var/log/gitlab
+2. 配置hosts
+
+127.0.0.1       localhost
+127.0.1.1       halouwode.net   halouwode
+127.0.0.1       dev.gitlab.com
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+3. 启动
+
+wwx@halouwode:/home$ ll
+总用量 20
+drwxr-xr-x  4 root root 4096 8月  22 15:25 ./
+drwxr-xr-x 24 root root 4096 8月  22 11:11 ../
+-rw-r--r--  1 root root 1205 8月  22 15:19 docker-compose.yml
+drwxr-xr-x  5 root root 4096 8月  22 15:25 gitlab/
+drwxr-xr-x 23 wwx  wwx  4096 8月  22 11:50 wwx/
+wwx@halouwode:/home$ sudo docker-compose up -d
+访问http://dev.gitlab.com:9999
