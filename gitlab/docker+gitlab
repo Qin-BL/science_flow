@@ -1,124 +1,200 @@
-原文：https://cloud.tencent.com/developer/article/1492492
+原文：https://www.jianshu.com/p/d7ebcc0413d6
 
 
-一、GitLab简介
-项目的开发通常都离不开对代码的版本管理。简单的方式可以在内网搭建一个仓库，然后添加各个组员的公钥来共同开发。这种方式不仅不利于管理和维护，而且功能过于单一。我们很希望有像GitHub这样的平台服务，功能齐全且好维护。但由于GFW的原因，有时候访问延迟过大。更重要的是，github免费版只支持开源项目，私有项目需要付费，而且比较昂贵，并不适合公司的项目。
+GitLab 中文社区版 Docker 镜像
+基于 GitLab 官方社区版 Docker 镜像制作的中文 Docker 镜像， 汉化补丁来自网友larryli (8.8.5之前)， 后续由网友 xhang 维护。
+由于汉化工作需要大量的人力， 所以中文版的版本会比官方的版本稍低， 如果刻意最求最新版， 请使用官方的 GitLab Docker 镜像。
+如果发现汉化的问题， 请向 xhang 反映。
+获取镜像
+docker pull beginor/gitlab-ce:11.3.0-ce.0
+运行
+通常会将 GitLab 的配置 (etc) 、 日志 (log) 、数据 (data) 放到容器之外， 便于日后升级， 因此请先准备这三个目录。
+sudo mkdir -p /mnt/sda1/gitlab/etc
+sudo mkdir -p /mnt/sda1/gitlab/log
+sudo mkdir -p /mnt/sda1/gitlab/data
+sudo mkdir -p /mnt/sda1/gitlab/etc/ssl(配置ssl证书)
+sudo chmod 700 /mnt/sda1/gitlab/etc/ssl
+或者：
+sudo mkdir /mnt/sda1/gitlab/{etc/ssl,data,log} -pv
+也可细分：
+sudo mkdir /mnt/sda1/gitlab/{etc/ssl/{key,crt},data,log} -pv
+准备好这四个目录之后， 就可以开始运行 Docker 镜像了。 我的建议是使用unless-stopped 作为重启策略， 因为这样可以手工停止容器， 方便维护。
+完整的运行命令如下：
+docker run --detach \
+    --hostname centos \
+    --publish 40443:40443 \
+    --publish 40080:80 \
+    --publish 40022:22 \
+    --name gitlab \
+    --restart unless-stopped \
+    --volume /mnt/sda1/gitlab/etc:/etc/gitlab \
+    --volume /mnt/sda1/gitlab/log:/var/log/gitlab \
+    --volume /mnt/sda1/gitlab/data:/var/opt/gitlab \
+    --volume /mnt/sda1/gitlab/etc/ssl:/etc/gitlab/ssl \
+    --volume /mnt/sda1/gitlab/backups:/var/opt/gitlab/backups \
+    beginor/gitlab-ce:11.3.0-ce.0
 
-GitLab 是一个类似与GitHub的项目，功能十分强大且界面美观，支持代码管理、issue管理、代码review和CI等功能。它提供免费的社区版和付费版，社区版足够满足我们的项目需求。本篇文章我将介绍GitLab社区版的安装和配置。
+如果需要开启SELINUX，则需要这样运行：
+docker run --detach \
+    --hostname centos \
+    --publish 40443:40443 \
+    --publish 40080:80 \
+    --publish 40022:22 \
+    --name gitlab \
+    --restart unless-stopped \
+    --volume /mnt/sda1/gitlab/etc:/etc/gitlab:Z \
+    --volume /mnt/sda1/gitlab/log:/var/log/gitlab:Z \
+    --volume /mnt/sda1/gitlab/data:/var/opt/gitlab:Z \
+    --volume /mnt/sda1/gitlab/etc/ssl:/etc/gitlab/ssl:Z \
+    --volume /mnt/sda1/gitlab/backups:/var/opt/gitlab/backups:Z \
+    beginor/gitlab-ce:11.3.0-ce.0
+ 也可以是如下命令，简化单词
+ docker run -d \
+    -p 40443:40443 \
+    -p 40080:80 \
+    -p 40022:22 \
+    --name gitlab \
+    --restart unless-stopped \
+    --volume /mnt/sda1/gitlab/etc:/etc/gitlab \
+    --volume /mnt/sda1/gitlab/log:/var/log/gitlab \
+    --volume /mnt/sda1/gitlab/data:/var/opt/gitlab \
+    --volume /mnt/sda1/gitlab/backups:/var/opt/gitlab/backups \
+    beginor/gitlab-ce:11.3.0-ce.0
+或者添加SELINUX：
+ docker run -d \
+    -p 40443:40443 \
+    -p 40080:80 \
+    -p 40022:22 \
+    --name gitlab \
+    --restart unless-stopped \
+    --volume /mnt/sda1/gitlab/etc:/etc/gitlab:Z \
+    --volume /mnt/sda1/gitlab/log:/var/log/gitlab:Z \
+    --volume /mnt/sda1/gitlab/data:/var/opt/gitlab:Z \
+    --volume /mnt/sda1/gitlab/backups:/var/opt/gitlab/backups:Z \
+    beginor/gitlab-ce:11.3.0-ce.0
+升级
+小版本升级（例如从 8.8.2 升级到 8.8.3）， 参照官方的说明， 将原来的容器停止， 然后删除：
+docker stop gitlab
+docker rm gitlab
+然后重新拉一个新版本的镜像下来，
+docker pull beginor/gitlab-ce:11.3.0-ce.0
+还使用原来的运行命令运行，
+docker run --detach \
+    --hostname centos \
+    --publish 40443:40443 \
+    --publish 40080:80 \
+    --publish 40022:22 \
+    --name gitlab \
+    --restart unless-stopped \
+    --volume /mnt/sda1/gitlab/etc:/etc/gitlab \
+    --volume /mnt/sda1/gitlab/log:/var/log/gitlab \
+    --volume /mnt/sda1/gitlab/data:/var/opt/gitlab \
+    --volume /mnt/sda1/gitlab/backups:/var/opt/gitlab/backups \
+    beginor/gitlab-ce:11.3.0-ce.0
+GitLab 在初次运行的时候会自动升级， 为了预防万一， 还是建议先备份一下 /mnt/sda1/gitlab/ 这个目录。
+大版本升级（例如从 8.7.x 升级到 8.8.x）用上面的操作有可能会出现错误， 如果出现错误可以尝试登录到容器内部， 可以用 docker exec ， 也可以用 ssh ，
+依次执行下面的命令：
+sudo docker exec -it continerID /bin/bash
 
-二 、安装Docker Client
-推荐安装1.10.0以上版本的Docker客户端，参考文档 docker-ce
+或者，仅仅只编辑/etc/gitlab/gitlab.rb
+sudo docker exec -it gitlab vi /etc/gitlab/gitlab.rb
+更新配置
+gitlab-ctl reconfigure
+gitlab-ctl restart
+More
+想知道更多高级的玩法， 请参考这些：
+The official GitLab Community Edition Docker image is available on Docker Hub.
+The official GitLab Enterprise Edition Docker image is available on Docker Hub.
+The complete usage guide can be found in Using GitLab Docker images.
+The Dockerfile used for building public images is in Omnibus Repository.
+Check the guide for creating Omnibus-based Docker Image.
+gitlab容器配置https
+1、颁发自签证书
+生成证书到/mnt/sda1/gitlab/etc/ssl
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj \
+"/C=FR/ST=Charente/L=Mornac/O=Office/CN=www.gitlab-test.com" -keyout \
+/mnt/sda1/gitlab/etc/ssl/www.gitlab-test.com.key -out /mnt/sda1/gitlab/etc/ssl/www.gitlab-test.com.crt
+2、先启动容器
+docker run --detach \
+    --hostname centos \
+    --publish 40443:40443 \
+    --publish 40080:80 \
+    --publish 40022:22 \
+    --name gitlab \
+    --restart unless-stopped \
+    --volume /mnt/sda1/gitlab/etc:/etc/gitlab \
+    --volume /mnt/sda1/gitlab/log:/var/log/gitlab \
+    --volume /mnt/sda1/gitlab/data:/var/opt/gitlab \
+    beginor/gitlab-ce:11.3.0-ce.0
+3、停止容器
+  sudo docker stop gitlab
+4、修改配置文件
+vim /mnt/sda1/gitlab/etc/gitlab.rb
 
-1. 使用官方安装脚本自动安装
+## GitLab URL
+external_url 'https://test.kingtroldata.com:40443'
 
-[root@iZwz9eftauv7x69f5jvi96Z ~]# curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
-...
-[root@iZwz9eftauv7x69f5jvi96Z ~]# docker version
-Client:
- Version:           18.06.1-ce
- API version:       1.38
- Go version:        go1.10.3
- Git commit:        e68fc7a
- Built:             Tue Aug 21 17:23:03 2018
- OS/Arch:           linux/amd64
- Experimental:      false
+################################################################################
+## GitLab NGINX
+##! Docs: https://docs.gitlab.com/omnibus/settings/nginx.html
+################################################################################
+nginx['enable'] = true
+nginx['redirect_http_to_https'] = true
+nginx['redirect_http_to_https_port'] = 80
 
-Server:
- Engine:
-  Version:          18.06.1-ce
-  API version:      1.38 (minimum version 1.12)
-  Go version:       go1.10.3
-  Git commit:       e68fc7a
-  Built:            Tue Aug 21 17:25:29 2018
-  OS/Arch:          linux/amd64
-  Experimental:     false
-2. 配置国内镜像加速
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/www.gitlab-test.com.crt"
+nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/www.gitlab-test.com.key"
 
-针对Docker客户端版本大于 1.10.0 的用户
-
-您可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速
-
-        获取加速地址 -> 阿里云容器镜像服务
-
-sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json <<-'EOF'
-{
-  "registry-mirrors": ["https://kv08q9ph.mirror.aliyuncs.com"]
+nginx['proxy_set_headers'] = {
+"X-Forwarded-Proto" => "https",
+"X-Forwarded-Ssl" => "on",
 }
-EOF
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-三、安装Portainer
-Docker可视化界面的安装：Portainer
 
-$ docker volume create portainer_data
-$ docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
-四、Install Compose on Linux systems
-1. Run this command to download the latest version of Docker Compose:
+####ldap
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+main: # 'main' is the GitLab 'provider ID' of this LDAP server
+label: 'LDAP'
+host: 'ad01.mdde.com'
+port: 389
+uid: 'sAMAccountName'
+method: 'plain'
+bind_dn: 'CN=gitlabadmin,CN=Users,DC=mdde,DC=com'
+password: 'Mdddt88'
+active_directory: true
+allow_username_or_email_login: true
+base: 'OU=maksad,DC=mdde,DC=com'
+EOS
 
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-2.Apply executable permissions to the binary:
+gitlab_rails['gitlab_shell_ssh_port'] = 22
 
-sudo chmod +x /usr/local/bin/docker-compose
-3. Optionally, install command completion for the bash and zsh shell.
+####SMTP
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "mail.mdde.com"
+gitlab_rails['smtp_port'] = 25
+gitlab_rails['smtp_user_name'] = "syssin@mdde.com"
+gitlab_rails['smtp_password'] = "Masss"
+gitlab_rails['smtp_domain'] = "mail.mdde.com"
+gitlab_rails['smtp_authentication'] = "login"
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = false
+gitlab_rails['smtp_openssl_verify_mode'] = 'none'
+sudo docker start gitlab
+或者
+sudo docker exec -it continerID /bin/bash
+或者，仅仅只编辑/etc/gitlab/gitlab.rb
+sudo docker exec -it gitlab vi /etc/gitlab/gitlab.rb
+更新配置
+gitlab-ctl reconfigure
+gitlab-ctl restart
+Notice:
+1、其次由于是测试环境，属于内网布设，因此需要服务器/etc/hosts 文件和 自身pc主机C:\Windows\System32\drivers\etc\hosts 中添加相关域名解析信息
+具体如下：
+192.168.1.196  www.gitlab-test.com
+2、最好用Chrome浏览器，导入之前的自签证书www.gitlab-test.com.crt文件。存至个人目录即可
+3、第一次访问https://www.gitlab-test.com:40443/然后会提示修改密码。
 
-4. Test the installation.
-
-$ docker-compose --version
-docker-compose version 1.23.1, build 1719ceb
-五、安装GitLab
-1. 配置docker-compose
-
-version: '3'
-services:
-    gitlab:
-      image: 'twang2218/gitlab-ce-zh:9.4'
-      restart: unless-stopped
-      hostname: 'dev.gitlab.com'
-      environment:
-        TZ: 'Asia/Shanghai'
-        GITLAB_OMNIBUS_CONFIG: |
-          external_url 'http://dev.gitlab.com:9999'
-          gitlab_rails['time_zone'] = 'Asia/Shanghai'
-          # 需要配置到 gitlab.rb 中的配置可以在这里配置，每个配置一行，注意缩进。
-          # 比如下面的电子邮件的配置：
-           gitlab_rails['smtp_enable'] = true
-           gitlab_rails['smtp_address'] = "smtp.qq.com"
-           gitlab_rails['smtp_port'] = 465
-           gitlab_rails['smtp_user_name'] = "9579249@qq.com"
-           gitlab_rails['smtp_password'] = "成功开启POP3/SMTP服务后对应的授权码，写入此处"
-           gitlab_rails['smtp_authentication'] = "login"
-           gitlab_rails['smtp_enable_starttls_auto'] = true
-           gitlab_rails['smtp_tls'] = true
-           gitlab_rails['gitlab_email_from'] = '9579249@qq.com'
-      ports:
-        - '9999:9999'
-          #- '443:443'
-          #- '22:22'
-      volumes:
-        - /home/gitlab/config:/etc/gitlab
-        - /home/gitlab/data:/var/opt/gitlab
-        - /home/gitlab/logs:/var/log/gitlab
-2. 配置hosts
-
-127.0.0.1       localhost
-127.0.1.1       halouwode.net   halouwode
-127.0.0.1       dev.gitlab.com
-
-# The following lines are desirable for IPv6 capable hosts
-::1     ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-3. 启动
-
-wwx@halouwode:/home$ ll
-总用量 20
-drwxr-xr-x  4 root root 4096 8月  22 15:25 ./
-drwxr-xr-x 24 root root 4096 8月  22 11:11 ../
--rw-r--r--  1 root root 1205 8月  22 15:19 docker-compose.yml
-drwxr-xr-x  5 root root 4096 8月  22 15:25 gitlab/
-drwxr-xr-x 23 wwx  wwx  4096 8月  22 11:50 wwx/
-wwx@halouwode:/home$ sudo docker-compose up -d
-访问http://dev.gitlab.com:9999
+作者：泡菜爱上WaSabi
+链接：https://www.jianshu.com/p/d7ebcc0413d6
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
