@@ -6,6 +6,9 @@ import sys
 from tornado.options import options
 
 
+# cookie名
+COOKIES = 'my_science_lab'
+
 # 静态资源路径
 STATIC_PATH = os.path.join(sys.path[0], 'static')
 # tornado 模板路径
