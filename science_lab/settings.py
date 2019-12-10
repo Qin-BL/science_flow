@@ -18,11 +18,11 @@ DEFAULT_REDIS = {
 }
 # 默认mysql
 mysql_master = {
-    'user': 'user',
-    'password': 'password',
+    'user': 'root',
+    'password': 'qinbilei888',
     'host': '127.0.0.1',
     'port': 3306,
-    'db': 'test'
+    'db': 'science'
 }
 # ES
 ES_CONF = ["http://10.10.33.222:9200"]
