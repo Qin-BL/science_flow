@@ -1,0 +1,163 @@
+{% extends '/static/base.html' %}
+
+{% block headjs %}
+{% end %}
+
+{% block body %}
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">science_lab</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-right" lay-filter="navBar">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="#" class="layui-nav-img">
+          {{ user }}
+        </a>
+
+        {% if module == 'agent' %}
+            <dl class="layui-nav-child">
+              <dd><a href="/change_psw" target="iframe_a">修改密码</a></dd>
+            </dl>
+        {% end %}
+
+      </li>
+      <li class="layui-nav-item"><a href="/logout">退出</a></li>
+    </ul>
+  </div>
+
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        {% if module == 'agent' %}
+          <li class="layui-nav-item layui-this layui-nav-itemed" data-user=module data-type="new">
+            <a href="/agent/create" target="iframe_a">创建新项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="boss">
+            {% if agent_business_checkfailed_count != 0 %}
+                <a href="/agent/business_check" target="iframe_a">待总部审核项目（{{ agent_business_checkfailed_count }}）</a>
+            {% else %}
+                <a href="/agent/business_check" target="iframe_a">待总部审核项目</a>
+            {% end %}
+          </li>
+          <li class="layui-nav-item" data-user=xmodule data-type="me">
+            {% if agent_my_check_count != 0 %}
+                <a href="/agent/my_check" target="iframe_a">待我审核项目（{{ agent_my_check_count }}）</a>
+            {% else %}
+                <a href="/agent/my_check" target="iframe_a">待我审核项目</a>
+            {% end %}
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/agent/history" target="iframe_a"">历史项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/agent/unbound" target="iframe_a">解绑KTV服务器</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/agent/close_ktv" target="iframe_a">超过三日未开机KTV</a>
+          </li>
+        {% end %}
+        {% if module == 'agent_second' %}
+          <li class="layui-nav-item" data-user=xmodule data-type="me">
+            {% if agent_my_check_count != 0 %}
+                <a href="/agent/my_check" target="iframe_a">待我审核项目（{{ agent_my_check_count }}）</a>
+            {% else %}
+                <a href="/agent/my_check" target="iframe_a">待我审核项目</a>
+            {% end %}
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/agent/history" target="iframe_a"">历史项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/agent/close_ktv" target="iframe_a">超过三日未开机KTV</a>
+          </li>
+        {% end %}
+        {% if module == 'business' %}
+          <li class="layui-nav-item layui-this layui-nav-itemed" data-user=module data-type="new" window.location.reload()>
+            {% if business_my_check_count != 0 %}
+                <a href="/business/check" target="iframe_a">待审核项目（{{ business_my_check_count }}）</a>
+            {% else %}
+                <a href="/business/check" target="iframe_a">待审核项目</a>
+            {% end %}
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="boss">
+            <a href="/business/history" target="iframe_a" >历史项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="me">
+            <a href="/business/agent_msg" target="iframe_a">代理商信息</a>
+          </li>
+          <!--
+          <li class="layui-nav-item" data-user=module data-type="me">
+            <a href="/business/sales" target="iframe_a">销售信息</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/business/msg" target="iframe_a">商务信息</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="/business/users" target="iframe_a">行业信用户</a>
+          </li>
+          -->
+        {% end %}
+        {% if module == 'sales' %}
+          <li class="layui-nav-item layui-this layui-nav-itemed" data-user=module data-type="new">
+            <a href="javascript:;" target="iframe_a">创建新项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="boss">
+            <a href="javascript:;" target="iframe_a">待总部审核项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="me">
+            <a href="javascript:;" target="iframe_a">待我审核项目</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="history">
+            <a href="javascript:;" target="iframe_a">历史项目</a>
+          </li>
+        {% end %}
+        {% if module == 'super' %}
+          <li class="layui-nav-item" layui-this layui-nav-itemed" data-user=module data-type="boss">
+            <a href="/super/ktv_info" target="iframe_a">KTV信息</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/super/ktv_info/new_ktv" target="iframe_a">每日新增信息</a></dd>
+            </dl>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="boss">
+            <a href="/super/ktv_auth_err" target="iframe_a">授权失败KTV信息</a>
+          </li>
+          <li class="layui-nav-item" data-user=module data-type="boss">
+            <a href="/super/ktv_close" target="iframe_a">超过三日未开机KTV</a>
+          </li>
+        {% end %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    {% if module == 'agent' %}
+      <iframe src="/agent/create" name="iframe_a" frameborder="0" width="100%" height="100%">
+      </iframe>
+    {% end %}
+    {% if module == 'agent_second' %}
+      <iframe src="/agent/my_check" name="iframe_a" frameborder="0" width="100%" height="100%">
+      </iframe>
+    {% end %}
+    {% if module == 'business' %}
+      <iframe src="/business/check" name="iframe_a" frameborder="0" width="100%" height="100%">
+      </iframe>
+    {% end %}
+    {% if module == 'sales' %}
+      <iframe src="/sales/create" name="iframe_a" frameborder="0" width="100%" height="100%">
+      </iframe>
+    {% end %}
+    {% if module == 'super' %}
+      <iframe src="/super/ktv_info" name="iframe_a" frameborder="0" width="100%" height="100%">
+      </iframe>
+    {% end %}
+  </div>
+</div>
+{% end %}
+
+
+{% block footjs %}
+<script src="{{ static_url('index.js') }}"></script>
+{% end %}

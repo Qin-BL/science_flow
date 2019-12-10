@@ -1,0 +1,184 @@
+.layui-body {
+    padding: 20px;
+  }
+
+  .layui-layout-admin .layui-body {
+    bottom: 0;
+  }
+
+  .layui-input-block {
+    width: 60%;
+  }
+
+  .layui-select-title {
+    width: 100%;
+  }
+
+  .layui-form-box {
+    width: 50%;
+    float: left;
+  }
+
+  .layui-form-center .layui-input-block{
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .layui-input-msg {
+    padding: 9px 0;
+    text-align: left;
+    font-weight: 400;
+  }
+
+  .layui-body-item {
+    display: none;
+  }
+
+  .layui-body-item-active {
+    display: block
+  }
+
+  .layui-form-center .layui-form-item:first-child {
+    margin-bottom: 0;
+  }
+
+  .layui-form-center .layui-form-checkbox[lay-skin=primary] {
+    margin-top: 0;
+  }
+
+  .layui-form-center .layui-form-item:nth-child(2) {
+    width: 50%;
+    margin: 0 auto 15px;
+  }
+
+  .layui-form-center .layui-form-label {
+    width: 120px;
+  }
+
+  .layui-form-center .layui-form-item .layui-input-radio {
+    text-align: left;
+  }
+
+  .layui-form-center .remark {
+    width: 50%;
+    margin: 0 auto 15px;
+    text-align: left;
+  }
+
+  .layui-tab-title {
+    border-bottom: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .layui-tab-title li {
+    width: 50%;
+    padding: 0;
+    background: #eee;
+    color: #000;
+  }
+
+  .layui-tab-title .layui-this {
+    background: #009688;
+    color: #fff;
+  }
+
+  table .layui-input-date {
+    padding: 2px;
+    width: 100%;
+  }
+
+  .layui-table {
+    margin: 10px 0 0 0;
+  }
+
+  .layui-div-search {
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 16px;
+  }
+
+  .layui-div-search label {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .layui-div-search::after {
+    display: inline-block;
+    content: "";
+    height: 100%;
+    width: 0;
+    vertical-align: middle;
+  }
+
+  .layui-div-search input {
+    width: 50%;
+    margin: 0 20px;
+    padding: 4px 0;
+    min-width: 150px;
+    vertical-align: middle;
+  }
+
+  .layui-table {
+    margin: 10px 0 0 0 ;
+  }
+
+  .page-mod {
+    position: relative;
+    width: 100%;
+    padding: 7px;
+    border-width: 0 1px;
+    border-style: solid;
+    border-color: #eee;
+    height: 41px;
+    color: #999;
+    margin-bottom: -1px;
+    font-size: 12px;
+    line-height: 26px;
+    letter-spacing: 5px;
+    box-sizing: border-box;
+  }
+  .page-mod a {
+    color: #999;
+   }
+
+  .page-mod .on {
+    display: inline-block;
+    font-style: normal;
+    height: 26px;
+    width: 28px;
+    padding: 0 0 0 2px;
+    line-height: 26px;
+    border-radius: 2px;
+    text-align: center;
+    color: #fff;
+    background: #009688;
+  }
+
+  .page-total {
+    border-width: 1px 1px;
+  }
+
+  .page-total em {
+    font-style: normal;
+    color: #333;
+  }
+
+  .layui-div-search .layui-input-block {
+    width: 150px;
+    height: 26px;
+    margin-left: 0;
+  }
+  .layui-div-search .layui-form-item {
+    float: left;
+    margin-right: 10px;
+  }
+  .layui-div-search .layui-input-block input {
+    width: 100%;
+    padding: 0 0 0 10px;
+    margin: 0;
+    height: 30px;
+  }
