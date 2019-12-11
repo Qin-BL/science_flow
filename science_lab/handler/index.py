@@ -29,5 +29,5 @@ class LogoutHandler(BaseHandler):
 
 class RegisterHandler(BaseHandler):
 
-    def get(self):
+    def post(self):
         pass

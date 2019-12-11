@@ -21,6 +21,7 @@ else:
     from settings import *
 
 urls = [
+    (r'/', 'handler.index.IndexHandler'),
     (r'/index', 'handler.index.IndexHandler'),
     (r'/login', 'handler.index.LoginHandler'),
     (r'/logout', 'handler.index.LogoutHandler'),
