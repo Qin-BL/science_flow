@@ -6,6 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="{{  static_url('layui/css/layui.css') }}"  media="all">
+  <link rel="stylesheet" href="{{  static_url('css/admmin.css') }}"  media="all">
+  <link rel="stylesheet" href="{{  static_url('css/login.css') }}"  media="all">
   <title>welcome to science lab!</title>
   <style type="text/css">
       .divForm{
@@ -22,43 +24,92 @@
   </style>
 </head>
 <body>
-    <div class="divForm">
-    <form id ="form1" class="layui-form layui-form-pane" action="/login" method="POST">
-        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-        <div class="layui-form-item">
-            <div class="layui-input-inline">
-              <h2>science lab</h2>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">用户名</label>
-            <div class="layui-input-inline">
-              <input type="text" name="uname" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">密码</label>
-            <div class="layui-input-inline">
-              <input type="password" name="passwd" placeholder="请输入密码" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-inline">
-              {% if errmsg %}<div class="layui-bg-red">{{ errmsg }}</div>{% end %}
-            </div>
-        </div>
 
-        <div class="layui-form-item">
-            <div class="layui-input-inline">
-              <button class="layui-btn" lay-submit lay-filter="submit" id="btn1" type="submit" >登陆</button>
+    <div class="divForm">
+        <form id ="form1" class="layui-form layui-form-pane" action="/login" method="POST">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <h2>science lab</h2>
+                </div>
             </div>
-        </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="uname" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="passwd" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    {% if errmsg %}<div class="layui-bg-red">{{ errmsg }}</div>{% end %}
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit id="login" type="submit" lay-filter="LAY-user-login-submit">登录</button>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit id="register">
+                        <a href="/register" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">
+                            注册
+                        </a>
+                    </button>
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-bottom: 20px;">
+              <a href="forget.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">忘记密码？</a>
+            </div>
     </form>
     </div>
 
 <script src="{{ static_url('layui/layui.js') }}" charset="utf-8"></script>
-<script>
+<!--<script>-->
+<!--layui.use(['index', 'user'], function(){-->
+    <!--var $ = layui.$,-->
+        <!--setter = layui.setter,-->
+        <!--admin = layui.admin,-->
+        <!--form = layui.form;-->
 
-</script>
+    <!--form.render();-->
+
+    <!--//提交-->
+    <!--form.on('submit(LAY-user-login-submit)', function(obj){-->
+    <!---->
+      <!--//请求登入接口-->
+      <!--admin.req({-->
+        <!--url: layui.setter.base + '/login', //实际使用请改成服务端真实接口-->
+        <!--data: obj.field, -->
+        <!--done: function(res){-->
+        <!---->
+              <!--//请求成功后，写入 access_token-->
+              <!--layui.data(setter.tableName, {-->
+                <!--key: setter.request.tokenName-->
+                <!--,value: res.data.access_token-->
+              <!--});-->
+              <!---->
+              <!--//登入成功的提示与跳转-->
+              <!--layer.msg('登入成功', {-->
+                <!--offset: '15px'-->
+                <!--,icon: 1-->
+                <!--,time: 1000-->
+              <!--}, function(){-->
+                <!--location.href = '../'; //后台主页-->
+            <!--});-->
+        <!--}-->
+      <!--});-->
+      <!---->
+    <!--});})-->
+    <!---->
+<!--</script>-->
 </body>
 </html>

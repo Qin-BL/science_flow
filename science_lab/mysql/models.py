@@ -31,7 +31,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    name = Column(VARCHAR(128), nullable=True, default='小科学家')
+    name = Column(VARCHAR(128), nullable=True, default='小明')
     headimg = Column(VARCHAR(128), nullable=True, default='http://cdn.layui.com/avatar/168.jpg')
     mail = Column(VARCHAR(128), nullable=False)
     phone = Column(VARCHAR(128), nullable=True, default='')
