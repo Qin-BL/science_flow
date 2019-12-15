@@ -1,7 +1,8 @@
-
 from handler import BaseHandler
-from control.index import get_index_content, get_all_content, get_one_content
-from control.user import user_verify
+from control.user import user_verify, has_uname
+from lib.send_mail import send_mail
+from control.index import gen_verify_code, verify_vcode
+from mysql.user import add_user
 
 
 class IndexHandler(BaseHandler):
@@ -49,7 +50,65 @@ class RegisterHandler(BaseHandler):
         self.render('register.html')
 
     def post(self):
-        pass
+        try:
+            uname = self.get_argument("uname")
+            mail = self.get_argument("mail")
+            pwd = self.get_argument("password")
+            vcode = self.get_argument("vcode")
+        except:
+            return self.send_json(errcode=1001, errmsg='参数错误')
+        vres = verify_vcode(mail, vcode)
+        if not vres:
+            return self.send_json(errcode=1002, errmsg="验证码失效")
+        if has_uname(uname):
+            return self.send_json(errcode=1003, errmsg="用户名已存在")
+        uinfo = {
+            "name": uname,
+            "mail": mail,
+            "password": pwd
+        }
+        add_user(uinfo)
+        self.send_json()
+
+
+class ResetHandler(BaseHandler):
+
+    def get(self):
+        self.render('reset.html')
+
+    def post(self):
+        try:
+            uname = self.get_argument("uname")
+            mail = self.get_argument("mail")
+            pwd = self.get_argument("password")
+            vcode = self.get_argument("vcode")
+        except:
+            return self.send_json(errcode=1001, errmsg='参数错误')
+        vres = verify_vcode(mail, vcode)
+        if not vres:
+            return self.send_json(errcode=1002, errmsg="验证码失效")
+        if not has_uname(uname):
+            return self.send_json(errcode=1004, errmsg="用户名不存在")
+        uinfo = {
+            "name": uname,
+            "mail": mail,
+            "password": pwd
+        }
+        add_user(uinfo)
+        self.send_json()
+
+
+class VerifyCodeHandler(BaseHandler):
+
+    def get(self):
+        try:
+            receiver = self.get_argument('rec')
+        except:
+            return self.send_json(errcode=1001)
+        code = gen_verify_code(receiver)
+        text = "【验证码】%s（5分钟内有效），欢迎使用science lab" % code
+        send_mail(receiver, text)
+        self.send_json()
 
 
 class ChangePwdHandler(BaseHandler):

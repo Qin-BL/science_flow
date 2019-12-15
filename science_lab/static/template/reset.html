@@ -22,58 +22,6 @@
   </style>
 </head>
 <body>
-
-    <!--<div class="divForm">-->
-        <!--<form id ="form1" class="layui-form layui-form-pane" action="/register" method="POST">-->
-            <!--<input type="hidden" name="_token" value="{{ csrf_token() }}" />-->
-            <!--<div class="layui-form-item">-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<h2>science lab</h2>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="layui-form-item">-->
-                <!--<label class="layui-form-label">用户名</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" name="uname" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="layui-form-item">-->
-                <!--<label class="layui-form-label">邮箱</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" name="mail" lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="layui-form-item">-->
-                <!--<label class="layui-form-label">密码</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="password" name="passwd" placeholder="请输入密码" autocomplete="off" class="layui-input">-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="layui-form-item">-->
-                <!--<label class="layui-form-label">确认密码</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="password" name="repasswd" placeholder="请输入密码" autocomplete="off" class="layui-input">-->
-                <!--</div>-->
-            <!--</div>-->
-            <!---->
-            <!--<div class="layui-form-item">-->
-                <!--<div class="layui-input-inline">-->
-                    <!--{% if errmsg %}<div class="layui-bg-red">{{ errmsg }}</div>{% end %}-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div class="layui-form-item">-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<button class="layui-btn" lay-submit lay-filter="submit" id="login" type="submit" >登录</button>-->
-                <!--</div>-->
-            <!--</div>-->
-    <!--</form>-->
-    <!--</div>-->
-
-<!--<script src="{{ static_url('layui/layui.js') }}" charset="utf-8"></script>-->
-<!--<script>-->
-
-<!--</script>-->
 <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
     <div class="layadmin-user-login-main">
       <div class="layadmin-user-login-box layadmin-user-login-header">
@@ -115,7 +63,7 @@
           <!--<input type="checkbox" name="agreement" lay-skin="primary" title="同意用户协议" checked>-->
         <!--</div>-->
         <div class="layui-form-item">
-          <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-reg-submit">注 册</button>
+          <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-reg-submit">重置</button>
         </div>
       </div>
     </div>
@@ -165,7 +113,7 @@
 
       //请求接口
       admin.req({
-        url: layui.setter.base + '/register' //实际使用请改成服务端真实接口
+        url: layui.setter.base + '/reset' //实际使用请改成服务端真实接口
         ,data: field
         ,done: function(res){
             if(res.errcode == 1002){
@@ -178,8 +126,8 @@
                 });
                 return
               }
-              if(res.errcode == 1003){
-                layer.msg('用户名已存在', {
+              if(res.errcode == 1004){
+                layer.msg('用户不存在', {
                   offset: '15px'
                   ,icon: 1
                   ,time: 1000
@@ -189,7 +137,7 @@
                 return
               }
 
-          layer.msg('注册成功', {
+          layer.msg('重置成功', {
             offset: '15px'
             ,icon: 1
             ,time: 1000

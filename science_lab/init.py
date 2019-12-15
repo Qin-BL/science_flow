@@ -26,6 +26,8 @@ urls = [
     (r'/login', 'handler.index.LoginHandler'),
     (r'/logout', 'handler.index.LogoutHandler'),
     (r'/register', 'handler.index.RegisterHandler'),
+    (r'/reset', 'handler.index.ResetHandler'),
+    (r'/verify_code/send', 'handler.index.VerifyCodeHandler'),
     (r'/change_pwd', 'handler.index.ChangePwdHandler'),
 ]
 
