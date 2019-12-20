@@ -1,5 +1,6 @@
 from mysql.models import User
 from lib.mysql_session import session
+import logging
 
 
 def verify_user(uname, pwd):
@@ -11,6 +12,10 @@ def has_user(uname):
 
 
 def add_user(userinfo):
-    new = User(**userinfo)
-    session.add(new)
-    session.commit()
+    try:
+        new = User(**userinfo)
+        session.add(new)
+        session.commit()
+    except Exception as e:
+        logging.error(e)
+        session.rollback()
