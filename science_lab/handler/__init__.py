@@ -8,12 +8,6 @@ import re
 
 class BaseHandler(web.RequestHandler):
 
-    def get_cookie(self, *args, **kwargs):
-        return self.get_secure_cookie(*args, **kwargs)
-
-    def set_cookie(self, *args, **kwargs):
-        return self.set_secure_cookie(*args, **kwargs)
-
     def send_json(self, data={}, errcode=200, errmsg='', status_code=200):
         res = {
             'errcode.py': errcode,

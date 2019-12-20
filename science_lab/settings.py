@@ -28,7 +28,7 @@ mysql_master = {
     'db': 'science'
 }
 # ES
-ES_CONF = ["http://10.10.33.222:9200"]
+ES_CONF = ["http://127.0.0.1:9200"]
 # 请放在结尾
 if options.debug:
     from settings_debug import *
