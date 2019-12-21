@@ -27,7 +27,7 @@
 
     <div class="divForm">
         <form id ="form1" class="layui-form layui-form-pane" action="/login" method="POST">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            {% module xsrf_form_html() %}
             <div class="layui-form-item">
                 <div class="layui-input-inline">
                     <h2>science lab</h2>
