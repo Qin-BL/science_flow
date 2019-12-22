@@ -25,8 +25,8 @@
 </head>
 <body>
 
-    <div class="divForm">
-        <form id ="form1" class="layui-form layui-form-pane" action="/login" method="POST">
+    <div class="divForm layadmin-user-login-main">
+        <form id ="form1" class="layadmin-user-login-box layadmin-user-login-body layui-form" action="/login" method="POST">
             {% module xsrf_form_html() %}
             <div class="layui-form-item">
                 <div class="layui-input-inline">
@@ -53,18 +53,16 @@
             </div>
 
             <div class="layui-form-item">
-                <div class="layui-input-inline">
-                    <button class="layui-btn layui-btn-fluid" lay-submit id="login" type="submit" lay-filter="LAY-user-login-submit">登录</button>
-                </div>
+                <button class="layui-btn layui-btn-fluid" lay-submit id="login" lay-filter="LAY-user-login-submit">
+                    登录
+                </button>
             </div>
             <div class="layui-form-item">
-                <div class="layui-input-inline">
-                    <button class="layui-btn" lay-submit id="register">
-                        <a href="register.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">
-                            注册
-                        </a>
-                    </button>
-                </div>
+                <button class="layui-btn layui-btn-fluid" lay-submit id="register">
+                    <a href="register.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">
+                        注册
+                    </a>
+                </button>
             </div>
             <div class="layui-form-item" style="margin-bottom: 20px;">
               <a href="reset.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">忘记密码？</a>
