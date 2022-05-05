@@ -1,6 +1,6 @@
-#科研工作流
+# science flow
 
-##一、gitlab集群搭建
-###1.k8s + docker
-###2.HA集群
-##二、sciencelab部署
+## gitlab
+### 1.k8s + docker
+### 2.HA
+## sciencelab deploy
